@@ -1,0 +1,31 @@
+.search-box {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.table-container {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-row:hover {
+    background-color: #f0f4ff !important;
+}
+
+.add-row {
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.add-row:hover {
+    background-color: #e0eaff;
+}
+
+.add-text {
+    font-style: italic;
+    color: #3f51b5;
+    font-weight: 500;
+}

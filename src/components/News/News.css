@@ -1,0 +1,136 @@
+/* Общие стили для страницы */
+/* Фон для всей страницы */
+
+/* Общие стили для страницы */
+.page-wrapper {
+    padding: 20px;
+    background: linear-gradient(to bottom, #00c6ff, #5cf339); /* Голубо-зеленый градиент */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Заголовок и подзаголовок с анимацией */
+/* Заголовок и подзаголовок с анимацией */
+.news-header {
+    background: url("C:/Users/user/IdeaProjects/employee-experience-front/public/static/images/news.jpg") no-repeat center center;
+    background-size: cover;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 30px;
+    margin-bottom: 2rem;
+    height: 350px;
+    opacity: 0; /* Начальная непрозрачность */
+    transform: translateY(20px); /* Начальное смещение */
+    animation: fadeInHeader 1s ease forwards; /* Анимация появления */
+}
+
+/* Анимация для заголовка */
+@keyframes fadeInHeader {
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Убираем смещение */
+    }
+}
+
+
+.news-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+}
+
+.news-header p {
+    margin: 0;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Контейнер для карточек */
+.news-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Гибкая сетка */
+    gap: 20px;
+    padding: 0 1rem;
+}
+
+/* Карточка с новостью */
+.news-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInCard 0.8s ease forwards;
+}
+
+.news-card:nth-child(n) {
+    animation-delay: calc(0.1s * var(--i));
+}
+
+.news-image {
+    width: 100%; /* Ширина изображения */
+    height: 200px; /* Ограничиваем высоту */
+    object-fit: contain; /* Сохраняет пропорции изображения без обрезки */
+    border-radius: 6px;
+}
+
+.news-content {
+    flex: 1;
+}
+
+/* Заголовок новости */
+.news-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.news-date {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 0.5rem;
+}
+
+/* Анимация появления заголовка */
+@keyframes fadeInHeader {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Стили для карточек */
+.news-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInCard 0.8s ease forwards;
+    transition: all 0.3s ease; /* Плавное изменение при наведении */
+}
+
+/* Эффект наведения */
+.news-card:hover {
+    background-color: rgb(235, 235, 236); /* Меняем цвет фона на светло-серый */
+    transform: translateY(-15px) scale(1.2); /* Увеличиваем размер на 5% и поднимаем */
+    box-shadow: 0 4px 12px rgb(152, 40, 241); /* Увеличиваем тень для выделения */
+}
+
+/* Анимация карточек */
+@keyframes fadeInCard {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
