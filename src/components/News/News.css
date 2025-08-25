@@ -12,7 +12,7 @@
 /* Заголовок и подзаголовок с анимацией */
 /* Заголовок и подзаголовок с анимацией */
 .news-header {
-    background: url("C:/Users/user/IdeaProjects/employee-experience-front/public/static/images/news.jpg") no-repeat center center;
+    background: url("news.jpg") no-repeat center center;
     background-size: cover;
     color: white;
     padding: 2rem;
