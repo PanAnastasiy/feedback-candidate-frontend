@@ -20,13 +20,9 @@ export const AppRoutes = () => {
                 document.title = 'Главная - PanCompany';
                 setFavicon('home.ico');
                 break;
-            case '/login':
+            case '/auth':
                 document.title = 'Вход - PanCompany';
                 setFavicon('login.ico');
-                break;
-            case '/registration':
-                document.title = 'Регистрация - PanCompany';
-                setFavicon('registration.ico');
                 break;
             case '/about':
                 document.title = 'О нас - PanCompany';
@@ -61,7 +57,7 @@ export const AppRoutes = () => {
     return (
         <Routes>
             <Route path="/" element={<Preview />} />
-            <Route path="/registration" element={<Registration />} />
+            <Route path="/auth" element={<Registration />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/skills" element={<SkillPage />} />

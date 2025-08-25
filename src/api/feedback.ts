@@ -1,13 +1,12 @@
-
 import { SectionWithKeywords, FeedbackItem } from '../types/Feedback';
-import {getAuthHeaders} from "../utils/getAuthHeaders";
-
-const API_BASE = '/api/feedback';
+import { getAuthHeaders} from "../utils/getAuthHeaders";
+import {getApiEndpoint} from "../configs/app";
 
 export const saveFinalFeedback = async (feedbackPayload: any) => {
   const method = feedbackPayload.id ? 'PUT' : 'POST';
   const url = feedbackPayload.id
-    ? `http://localhost:2002/feedbacks/${feedbackPayload.id}` : `http://localhost:8000/feedbacks`;
+    ? getApiEndpoint(`/feedbacks/${feedbackPayload.id}`)
+    : getApiEndpoint('/feedbacks');
 
   console.log('Отправка фидбека на сервер:');
   console.log('Метод:', method);
@@ -17,9 +16,10 @@ export const saveFinalFeedback = async (feedbackPayload: any) => {
 
   const res = await fetch(url, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(),
     body: JSON.stringify(feedbackPayload),
   });
+
   if (!res.ok) {
     throw new Error('Ошибка при сохранении фидбека');
   }
@@ -27,23 +27,15 @@ export const saveFinalFeedback = async (feedbackPayload: any) => {
   return await res.json();
 };
 
-
-
 export const generateFeedbackForSection = async (
   section_name: string,
   keywords: string,
   skills: { name: string; level: number }[]
 ) => {
-  const res = await fetch('http://localhost:8000/generate', {
+  const res = await fetch(getApiEndpoint('/generate'), {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      section_name,
-      keywords,
-      skills,
-    }),
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ section_name, keywords, skills }),
   });
 
   if (!res.ok) {
@@ -56,7 +48,9 @@ export const generateFeedbackForSection = async (
 };
 
 export const getFeedbackByCandidateId = async (candidateId: number) => {
-  const res = await fetch(`http://localhost:8000/feedbacks/${candidateId}`);
+  const res = await fetch(getApiEndpoint(`/feedbacks/${candidateId}`), {
+    headers: getAuthHeaders(),
+  });
 
   if (res.status === 404) {
     // Фидбека еще нет — это не ошибка
@@ -69,5 +63,3 @@ export const getFeedbackByCandidateId = async (candidateId: number) => {
 
   return await res.json();
 };
-
-

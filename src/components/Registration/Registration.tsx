@@ -13,8 +13,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginIcon from '@mui/icons-material/Login';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { motion, AnimatePresence } from 'framer-motion';
-import {useAuth} from "../../api/authorization";
-
+import { useAuth } from "../../api/authorization";
+import { SnackbarMessage } from "../SnackBarMessage/SnackBarMessage";
+import { useNavigate } from "react-router-dom";
 
 const formVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -24,8 +25,12 @@ const formVariants = {
 
 export const Registration: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ email: '', password: '', name: '', username: '' });
-  const { login, register, loading, error } = useAuth();
+  const [formData, setFormData] = useState({ email: '', password: '', username: '', repeatPassword: '' });
+  const { login, register, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const handleCloseNotification = () => setNotification(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,28 +38,42 @@ export const Registration: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (isLogin) {
-      const res = await login({ username: formData.email, password: formData.password });
+      const res = await login({ email: formData.email, password: formData.password });
       if (res.error) {
-        console.log('Ошибка при логине:', res.error);
+        setNotification({ message: res.error || "Ошибка авторизации", type: "error" });
       } else {
-        console.log('Успешный логин', res);
+        setNotification({ message: "Вход выполнен успешно!", type: "success" });
+        setTimeout(() => navigate("/candidates"), 1000);
       }
     } else {
+      if (formData.password !== formData.repeatPassword) {
+        setNotification({ message: "Пароли не совпадают", type: "error" });
+        return;
+      }
+      if (formData.password.length < 6) {
+        setNotification({ message: "Пароль должен быть не менее 6 символов", type: "error" });
+        return;
+      }
+
       const res = await register({
         email: formData.email,
         username: formData.username || formData.email,
         password: formData.password,
       });
       if (res.error) {
-        console.log('Ошибка при регистрации:', res.error);
+        setNotification({ message: res.error || "Ошибка регистрации", type: "error" });
       } else {
-        console.log('Успешная регистрация', res);
+        setNotification({ message: "Регистрация прошла успешно! Пожалуйста, авторизуйтесь.", type: "success" });
+        setIsLogin(true);
+        setFormData({ ...formData, repeatPassword: '' });
       }
     }
   };
 
   return (
+      <>
     <Box display="flex" minHeight="100vh">
       {/* Левая колонка: форма */}
       <Box flex={1} display="flex" justifyContent="center" alignItems="center" sx={{ bgcolor: 'rgb(144, 196, 245)' }}>
@@ -64,7 +83,7 @@ export const Registration: React.FC = () => {
             p: 4,
             borderRadius: 4,
             width: 400,
-            height: 500,
+            height: 550,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -125,7 +144,23 @@ export const Registration: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  error={!isLogin && formData.password !== '' && formData.password.length < 6}
+                  helperText={!isLogin && formData.password !== '' && formData.password.length < 6 ? "Пароль должен быть не менее 6 символов" : ''}
                 />
+                {!isLogin && (
+                  <TextField
+                    label="Повторите пароль"
+                    name="repeatPassword"
+                    type="password"
+                    fullWidth
+                    margin="dense"
+                    value={formData.repeatPassword}
+                    onChange={handleChange}
+                    required
+                    error={formData.repeatPassword !== '' && formData.password !== formData.repeatPassword}
+                    helperText={formData.repeatPassword !== '' && formData.password !== formData.repeatPassword ? "Пароли не совпадают" : ''}
+                  />
+                )}
 
                 <Button
                   variant="contained"
@@ -134,7 +169,7 @@ export const Registration: React.FC = () => {
                   fullWidth
                   startIcon={isLogin ? <LoginIcon /> : <AppRegistrationIcon />}
                   sx={{ mt: 3 }}
-                  disabled={loading}
+                  disabled={loading || (!isLogin && (formData.password !== formData.repeatPassword || formData.password.length < 6))}
                 >
                   {loading ? <CircularProgress size={24} /> : isLogin ? 'Войти' : 'Зарегистрироваться'}
                 </Button>
@@ -142,12 +177,6 @@ export const Registration: React.FC = () => {
                 <Button onClick={() => setIsLogin(!isLogin)} sx={{ mt: 1 }} fullWidth>
                   {isLogin ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
                 </Button>
-
-                {error && (
-                  <Typography color="error" mt={1} textAlign="center">
-                    {error}
-                  </Typography>
-                )}
               </motion.div>
             </AnimatePresence>
           </Box>
@@ -192,8 +221,16 @@ export const Registration: React.FC = () => {
           </Box>
         </Box>
       </Box>
-    </Box>
+
+      </Box>
+       {/* Snackbar поверх всего */}
+      <SnackbarMessage
+        notification={notification || undefined}
+        handleClose={handleCloseNotification}
+      />
+    </>
   );
 };
 
 export default Registration;
+
